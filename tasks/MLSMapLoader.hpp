@@ -21,7 +21,8 @@ namespace maps
         virtual void createMLS(const pcl::PointCloud<pcl::PointXYZ>& pc,
                                maps::grid::Vector2ui gridSize,
                                maps::grid::Vector2d cellSize,
-                               maps::grid::Vector3d offset);
+                               maps::grid::Vector3d offset,
+                               maps::grid::Vector3d shift);
         virtual void writeMLS();
 
     public:

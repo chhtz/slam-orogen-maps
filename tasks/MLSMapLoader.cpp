@@ -18,7 +18,8 @@ MLSMapLoader::~MLSMapLoader()
 void MLSMapLoader::createMLS(const pcl::PointCloud<pcl::PointXYZ>& pc,
                              maps::grid::Vector2ui gridSize,
                              maps::grid::Vector2d cellSize,
-                             maps::grid::Vector3d offset)
+                             maps::grid::Vector3d offset,
+                             maps::grid::Vector3d shift)
 {
     std::cerr << "Not implemented, this Task is abstract!" << std::endl;
 }
@@ -90,7 +91,15 @@ bool MLSMapLoader::configureHook()
     std::cout << "Range(x): " << offset[0] << " - " << mapSize[0]+offset[0] << std::endl;
     std::cout << "Range(y): " << offset[1] << " - " << mapSize[1]+offset[1] << std::endl;
 
-    createMLS(pcl_cloud, gridSize, cellSize, offset);
+    maps::grid::Vector3d shift = _offset.get();
+    if(shift.hasNaN())
+    {
+        std::cerr << "Ignoring invalid map offset: " << shift.transpose() << '\n';
+        shift.setZero();
+    }
+
+    createMLS(pcl_cloud, gridSize, cellSize, offset, -shift);
+
     mMapLoaded = true;
     return true; 
 }

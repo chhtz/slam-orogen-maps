@@ -97,6 +97,9 @@ task_context "MLSMapLoader" do
     property('mls_config', 'maps/grid/MLSConfig')
     .doc("Parameters of the generated MLS map.")
 
+    property('offset', 'base/Vector3d')
+    .doc("Map offset, i.e. the (new) origin will be at (offset) in the original map.")
+
     operation('publishMap')
    	.returns("bool")
     .doc("Writes the map to the port.")
