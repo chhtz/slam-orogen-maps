@@ -60,12 +60,23 @@ bool MLSMapLoader::configureHook()
         }
     }
 
+    maps::grid::Vector3d shift = _offset.get();
+    if(shift.hasNaN())
+    {
+        std::cerr << "Ignoring invalid map offset: " << shift.transpose() << '\n';
+        shift.setZero();
+    }
     // Convert to base-type
+    mPointcloud.colors.clear();
+    mPointcloud.points.clear();
     mPointcloud.time.fromMicroseconds(pcl_cloud.header.stamp);
     mPointcloud.points.reserve(pcl_cloud.size());
-    for(pcl::PointCloud<pcl::PointXYZ>::const_iterator it = pcl_cloud.begin(); it < pcl_cloud.end(); it++)
+    for(pcl::PointCloud<pcl::PointXYZ>::iterator it = pcl_cloud.begin(); it < pcl_cloud.end(); it++)
     {
         base::Point p;
+        it->x -= shift.x();
+        it->y -= shift.y();
+        it->z -= shift.z();
         p[0] = it->x;
         p[1] = it->y;
         p[2] = it->z;
@@ -91,14 +102,8 @@ bool MLSMapLoader::configureHook()
     std::cout << "Range(x): " << offset[0] << " - " << mapSize[0]+offset[0] << std::endl;
     std::cout << "Range(y): " << offset[1] << " - " << mapSize[1]+offset[1] << std::endl;
 
-    maps::grid::Vector3d shift = _offset.get();
-    if(shift.hasNaN())
-    {
-        std::cerr << "Ignoring invalid map offset: " << shift.transpose() << '\n';
-        shift.setZero();
-    }
 
-    createMLS(pcl_cloud, gridSize, cellSize, offset, -shift);
+    createMLS(pcl_cloud, gridSize, cellSize, offset, 0*shift);
 
     mMapLoaded = true;
     return true; 
