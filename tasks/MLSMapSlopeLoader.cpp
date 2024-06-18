@@ -20,7 +20,7 @@ void MLSMapSlopeLoader::createMLS(const pcl::PointCloud<pcl::PointXYZ>& pc,
     mMap = maps::grid::MLSMapSloped(gridSize, cellSize, _mls_config);
     mMap.translate(offset);
     mMap.mergePointCloud(pc, base::Transform3d::Identity());
-    mMap.translate(-shift);
+    mMap.translate(shift);
 }
 
 void MLSMapSlopeLoader::writeMLS()
